@@ -3,11 +3,13 @@ package ticket.booking.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ticket.booking.entities.Ticket;
+import ticket.booking.entities.Train;
 import ticket.booking.entities.User;
 import ticket.booking.utils.UserServiceUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +21,41 @@ public class UserBookingService {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    public UserBookingService() throws IOException{
+        loadUsers();
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public UserBookingService(User fetched_user) throws IOException {
         this.user = fetched_user;
+        loadUsers();
+    }
+
+    public List<User> loadUsers() throws IOException{
         File users_info = new File(USERS_PATH);
-        //mapping data of local db of snake case to camelCase
+        //mapping data of local db of snake case to camelCase -> serialization
         userList = objectMapper.readValue(users_info, new TypeReference<List<User>>() {});
+        return userList;
+    }
+
+    public Optional<User> getUserByName(String name) throws IOException{
+        List<User> users_list = loadUsers();
+        return users_list.stream()
+                .filter(user -> user.getName().equals(name))
+                .findFirst();
+    }
+
+    public List<Train> getTrains(String source, String destination) throws IOException{
+        try {
+            TrainService trainService = new TrainService();
+            return trainService.searchTrains(source,destination);
+        } catch (Exception ex){
+            System.out.println("Can't get the list , getting this error of " + ex);
+            return new ArrayList<>();
+        }
     }
 
     public Boolean loginUser(){
@@ -36,7 +68,7 @@ public class UserBookingService {
     }
 
 
-    public Boolean signUp(User user1){
+    public Boolean signUp(User user1) throws IOException{
         try{
             userList.add(user1);
             saveUserListToFile();
@@ -52,11 +84,11 @@ public class UserBookingService {
         objectMapper.writeValue(users_info_file,userList);
     }
 
-    public void getTicketsBooked(){
+    public void fetchBookings(){
         user.printTickets();
     }
 
-    public boolean cancelBooking(String ticketId) throws Exception{
+    public boolean cancelBooking(String ticketId) throws IOException{
         //to remove this ticket from the list of ticketsBooked and reupdate the local db file.
 
         List<Ticket> user_booked_tickets = user.getTicketsBooked();
@@ -73,8 +105,7 @@ public class UserBookingService {
 
         File users_info_file = new File(USERS_PATH);
 
-        List<User> users_list = objectMapper.readValue(users_info_file, new TypeReference<List<User>>() {
-        });
+        List<User> users_list = loadUsers();
 
         for(User user1 : users_list){
             if (user1.getUserId().equals(user_id)){
