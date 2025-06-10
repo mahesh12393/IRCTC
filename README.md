@@ -2,8 +2,7 @@
 
 # 🎟️ **Ticket Booking System (CLI-Based)**  
 
-This project is my first **Java-based Ticket Booking System**, designed to strengthen my **Object-Oriented Programming (OOP)** skills while implementing practical functionalities like **user authentication, train search, ticket booking, and cancellation**. *Special thanks to [Lovepreet Singh](https://github.com/AlphaDecodeX) for his amazing tutorials and projects* 
-
+This project is my first **Java-based Ticket Booking System**, designed to strengthen my **Object-Oriented Programming (OOP)** and **Low Level System Design (LLD)** Skills
 ## 🚀 **Features**  
 
 ✔️ **User Authentication** – Secure sign-up and login system  
@@ -23,8 +22,7 @@ This project is my first **Java-based Ticket Booking System**, designed to stren
 
 ### **Step 1:** Clone the Repository  
 ```sh
-git clone https://github.com/Sameer07x19/TicketBookingSystem.git
-cd TicketBookingSystem
+git clone https://github.com/mahesh12393/IRCTC.git
 ```
 
 ### **Step 2:** Build the Project  
@@ -36,17 +34,5 @@ cd TicketBookingSystem
 ```sh
 ./gradlew run
 ```
-
-## 📌 **How to Use**  
-
-1️⃣ **Sign Up** – Register a new account  
-2️⃣ **Login** – Access your account securely  
-3️⃣ **Search Trains** – Enter source and destination  
-
-## 🏗️ **Future Enhancements**  
-
-🚀 **Graphical User Interface (GUI)** – Improve user experience  
-💾 **Database Integration** – Store user and train data persistently  
-🔧 **Admin Panel** – Manage train schedules and user bookings  
 
 ---
