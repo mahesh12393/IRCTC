@@ -23,6 +23,7 @@ public class App {
         }
         catch (IOException ex){
             System.out.println("There is something wrong!" + ex.getMessage());
+            scanner.close();
             return;
         }
 
@@ -36,8 +37,14 @@ public class App {
             System.out.println("5. Book a Seat");
             System.out.println("6. Cancel my Booking");
             System.out.println("7. Exit the Application");
+            System.out.print("Enter your choice: "); // Add this prompt
+            System.out.flush(); // Force output
+
+            System.out.println("Waiting for input..."); // Debug line
             option = scanner.nextInt();
+            System.out.println("Received input: " + option); // Debug line
             scanner.nextLine();
+
             switch (option){
                 case 1:
                     String signUpName;

@@ -25,6 +25,10 @@ dependencies {
     implementation 'org.mindrot:jbcrypt:0.4'
 }
 
+run {
+    standardInput = System.in
+}
+
 sourceSets {
     main {
         resources {

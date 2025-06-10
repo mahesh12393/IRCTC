@@ -3,6 +3,7 @@ package ticket.booking.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ticket.booking.entities.Train;
+import ticket.booking.utils.FileResourceUtil;
 import ticket.booking.utils.TrainServiceUtil;
 
 import java.io.File;
@@ -32,7 +33,7 @@ public class TrainService {
     }
 
     public List<Train> loadTrains() throws IOException{
-        File trains_info = new File(TRAINS_PATH);
+        File trains_info = FileResourceUtil.getTrainsFile();
         //mapping data of local db of snake case to camelCase -> serialization
         trainsList = objectMapper.readValue(trains_info, new TypeReference<List<Train>>() {});
         return trainsList;

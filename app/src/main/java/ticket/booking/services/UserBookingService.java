@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ticket.booking.entities.Ticket;
 import ticket.booking.entities.Train;
 import ticket.booking.entities.User;
+import ticket.booking.utils.FileResourceUtil;
 import ticket.booking.utils.UserServiceUtil;
 
 import java.io.File;
@@ -21,7 +22,16 @@ public class UserBookingService {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public UserBookingService() throws IOException{
-        loadUsers();
+//        loadUsers();
+        try {
+            // Your file loading code here
+           List<User> userList = loadUsers();
+            System.out.println("Loaded " + userList.size() + " users"); // Debug line
+        } catch (Exception e) {
+            System.out.println("Error in UserBookingService constructor: " + e.getMessage());
+            e.printStackTrace(); // This will show the full stack trace
+            throw new IOException("Failed to initialize UserBookingService", e);
+        }
     }
 
     public void setUser(User user) {
@@ -34,7 +44,7 @@ public class UserBookingService {
     }
 
     public List<User> loadUsers() throws IOException{
-        File users_info = new File(USERS_PATH);
+        File users_info = FileResourceUtil.getUsersFile();
         //mapping data of local db of snake case to camelCase -> serialization
         userList = objectMapper.readValue(users_info, new TypeReference<List<User>>() {});
         return userList;
@@ -94,13 +104,14 @@ public class UserBookingService {
             saveUserListToFile();
             return Boolean.TRUE;
         }catch (IOException ex){
+            System.out.println("Getting this error while signinig up user of " + ex);
             return Boolean.FALSE;
         }
     }
 
 
     public void saveUserListToFile() throws IOException{
-        File users_info_file = new File(USERS_PATH);
+        File users_info_file = FileResourceUtil.getUsersFile();
         objectMapper.writeValue(users_info_file,userList);
     }
 
@@ -123,7 +134,7 @@ public class UserBookingService {
         List<Ticket> updated_booked_tickets = this.user.getTicketsBooked();
         String user_id = this.user.getUserId();
 
-        File users_info_file = new File(USERS_PATH);
+        File users_info_file = FileResourceUtil.getUsersFile();
 
         List<User> users_list = loadUsers();
 
