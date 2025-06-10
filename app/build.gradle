@@ -25,6 +25,17 @@ dependencies {
     implementation 'org.mindrot:jbcrypt:0.4'
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources']
+            // Include JSON files from src/main/java as resources
+            srcDir 'src/main/java'
+            include '**/*.json'
+        }
+    }
+}
+
 
 //dependencies {
 //    // Use JUnit test framework.

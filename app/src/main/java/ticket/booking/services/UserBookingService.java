@@ -9,15 +9,14 @@ import ticket.booking.utils.UserServiceUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class UserBookingService {
     private User user;
 
     private List<User> userList;
-    private static final String USERS_PATH="app/src/main/java/ticket/booking/localDb/users.json";
+    private static final String USERS_PATH="/ticket/booking/localDb/users.json";
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -58,6 +57,27 @@ public class UserBookingService {
         }
     }
 
+    public List<List<Integer>> fetchSeats(Train train_selected){
+        return train_selected.getSeats();
+    }
+
+    public Boolean bookTrainSeat(Train train_selected, int row, int col){
+        List<List<Integer>> seat_matrix = fetchSeats(train_selected);
+        if(seat_matrix.get(row).get(col) == 1){
+            return Boolean.FALSE;
+        }
+        User current_user = this.user;
+        List<Ticket> existing_tickets = current_user.getTicketsBooked();
+        List<String> stations_list = train_selected.getStations();
+        String date_of_travel = new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().getTime());
+        String ticket_id = UUID.randomUUID().toString();
+        Ticket created_ticket = new Ticket(ticket_id,this.user.getUserId(),stations_list.get(0),
+                stations_list.get(stations_list.size()-1),date_of_travel,train_selected);
+
+        existing_tickets.add(created_ticket);
+        return Boolean.TRUE;
+    }
+
     public Boolean loginUser(){
         // using optional here as so when user is not there it won;t throw the null pointer exception.
         Optional<User> foundUser = userList.stream().filter(user1 ->{
@@ -85,13 +105,13 @@ public class UserBookingService {
     }
 
     public void fetchBookings(){
-        user.printTickets();
+        this.user.printTickets();
     }
 
     public boolean cancelBooking(String ticketId) throws IOException{
         //to remove this ticket from the list of ticketsBooked and reupdate the local db file.
 
-        List<Ticket> user_booked_tickets = user.getTicketsBooked();
+        List<Ticket> user_booked_tickets = this.user.getTicketsBooked();
         boolean ticket_removed = user_booked_tickets.removeIf(ticket -> ticket.getTicketId().equals(ticketId));
 
         if(!ticket_removed){
@@ -100,8 +120,8 @@ public class UserBookingService {
         }
 
         //updating the local db file.
-        List<Ticket> updated_booked_tickets = user.getTicketsBooked();
-        String user_id = user.getUserId();
+        List<Ticket> updated_booked_tickets = this.user.getTicketsBooked();
+        String user_id = this.user.getUserId();
 
         File users_info_file = new File(USERS_PATH);
 
